@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<Configuration>
+  <properties>
+    <property name="LOG_HOME">~/logs/gale</property>
+  </properties>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%highlight{%d{ISO8601} [%t] %-5level %c{1.} - %msg%n}"/>
+    </Console>
+    <RollingFile name="ControllerRollingFile" filename="${LOG_HOME}/controller.log" filePattern="${LOG_HOME}/$${date:yyyy/MM/dd}/controller-%d{yyyy-MM-dd-HH}.log">
+      <PatternLayout pattern="%d{ISO8601} [%t] %-5level %c{1.} - %msg%n"/>
+      <Policies>
+        <!-- 每小时封存一次-->
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+      </Policies>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="im.dadoo" level="INFO" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="ControllerRollingFile"/>
+    </Logger>
+    <Root level="INFO">
+      <AppenderRef ref="Console" />
+    </Root>
+  </Loggers>
+</Configuration>
