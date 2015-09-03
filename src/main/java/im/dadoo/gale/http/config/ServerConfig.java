@@ -1,25 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.config;
 
-import java.util.List;
-
 /**
- *
+ * 服务器配置信息
  * @author codekitten
  */
 public class ServerConfig {
   
   private int port = 9090;
   
-  //the max size of the post body,default 2M
-  private int size = 2 * 1024 * 1024;
-  
-  //package names for @Controller annotation
-  private List<String> packageNames;
+  //the max size of the post body,default 4G Byte
+  private int size = Integer.MAX_VALUE;
 
   public int getPort() {
     return port;
@@ -36,14 +26,4 @@ public class ServerConfig {
   public void setSize(int size) {
     this.size = size;
   }
-
-  public List<String> getPackageNames() {
-    return packageNames;
-  }
-
-  public void setPackageNames(List<String> packageNames) {
-    this.packageNames = packageNames;
-  }
-  
-  
 }

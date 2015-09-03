@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
+ * 保存编译后的url匹配模式和处理方法之间的对应关系
  * @author codekitten
  */
 public class Routee {
@@ -23,21 +23,36 @@ public class Routee {
   private RequestMethod method;
 
   /** uri匹配后的处理对象 */
-  private Object object;
+  private Object api;
 
   /** uri匹配后的处理方法 */
   private Method callback;
 
-  public static Routee of(String uri, RequestMethod method, Object object, Method callback) {
+  public static Routee of(String uri, RequestMethod method, Object api, Method callback) {
     Routee result = null;
-    if (StringUtils.isNotBlank(uri) && method != null && object != null && callback != null) {
+    if (StringUtils.isNotBlank(uri) && method != null && api != null && callback != null) {
       result = new Routee();
       result.pattern = GalePattern.compile(uri);
       result.method = method;
-      result.object = object;
+      result.api = api;
       result.callback = callback;
     }
     return result;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("Routee [pattern=");
+    builder.append(pattern);
+    builder.append(", method=");
+    builder.append(method);
+    builder.append(", api=");
+    builder.append(api);
+    builder.append(", callback=");
+    builder.append(callback);
+    builder.append("]");
+    return builder.toString();
   }
 
   public GalePattern getPattern() {
@@ -56,12 +71,12 @@ public class Routee {
     this.method = method;
   }
 
-  public Object getObject() {
-    return object;
+  public Object getApi() {
+    return api;
   }
 
-  public void setObject(Object object) {
-    this.object = object;
+  public void setApi(Object api) {
+    this.api = api;
   }
 
   public Method getCallback() {

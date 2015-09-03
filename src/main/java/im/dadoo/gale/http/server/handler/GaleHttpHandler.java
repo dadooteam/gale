@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -24,24 +25,27 @@ import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
- *
+ * 处理请求的类
  * @author codekitten
  */
+@Component
+@Sharable
 public class GaleHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
   private static final Logger logger = LoggerFactory.getLogger(GaleHttpHandler.class);
   
   private static final Logger elogger = LoggerFactory.getLogger(Exception.class);
   
-  private final GaleProcessor processor;
-  
-  public GaleHttpHandler(GaleProcessor processor) {
-    this.processor = processor;
-  }
+  @Resource
+  private GaleProcessor processor;
   
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
@@ -82,6 +86,12 @@ public class GaleHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest
     
   }
   
+  /**
+   * 将netty中的post请求解析成map格式
+   * @param datum
+   * @return
+   * @throws IOException
+   */
   private Map<String, List<String>> parsePostParameters(List<InterfaceHttpData> datum) throws IOException {
     Map<String, List<String>> result = Maps.newHashMap();
     if (datum != null && !datum.isEmpty()) {

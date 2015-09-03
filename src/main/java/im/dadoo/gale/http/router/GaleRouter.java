@@ -1,67 +1,54 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.router;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
-import im.dadoo.gale.http.annotation.Controller;
-import im.dadoo.gale.http.annotation.RequestMapping;
+import im.dadoo.gale.http.annotation.GaleMapping;
 import im.dadoo.gale.http.request.GaleRequest;
 import im.dadoo.gale.http.request.RequestMethod;
 import im.dadoo.gale.http.uri.GalePattern;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
- *
+ * 路由器，将url模板和对应的处理方法映射起来
  * @author codekitten
+ * @see Routee
  */
+@Component
 public class GaleRouter {
   
   private static final Logger logger = LoggerFactory.getLogger(GaleRouter.class);
   
   private static final Logger elogger = LoggerFactory.getLogger(Exception.class);
   
-  private final Set<Routee> routees;
+  private Set<Routee> routees;
   
-  public GaleRouter(List<String> packageNames) {
+  public void init(Collection<Object> apis) {
     this.routees = new HashSet<>();
     try {
-      ClassPath cp = ClassPath.from(ClassLoader.getSystemClassLoader());
-      for (String packageName : packageNames) {
-        if (StringUtils.isNotBlank(packageName)) {
-          ImmutableSet<ClassInfo> classInfos = cp.getTopLevelClasses(packageName);
-          for (ClassInfo classInfo : classInfos) {
-            Class<?> c = classInfo.load();
-            if (c.isAnnotationPresent(Controller.class)) {
-              Object object = c.newInstance();
-              Method[] methods = c.getMethods();
-              for (Method method : methods) {
-                if (checkMethod(method)) {
-                  RequestMapping mapping = method.getAnnotation(RequestMapping.class);
-                  String url = mapping.value();
-                  RequestMethod requestMethod = mapping.method();
-                  Routee routee = Routee.of(url, requestMethod, object, method);
-                  checkNotNull(routee, String.format("Routee is null.url{%s},requestMethod{%s},object{%s},method{%s}", url, requestMethod, object, method));
-                  this.routees.add(routee);
-                }
-              }
-            }
+      checkNotNull(apis);
+      
+      for (Object api : apis) {
+        Method[] methods = api.getClass().getMethods();
+        for (Method method : methods) {
+          if (checkMethod(method)) {
+            GaleMapping mapping = method.getAnnotation(GaleMapping.class);
+            String url = mapping.value();
+            RequestMethod requestMethod = mapping.method();
+            Routee routee = Routee.of(url, requestMethod, api, method);
+            checkNotNull(routee, String.format("Routee is null.url{%s},requestMethod{%s},api{%s},method{%s}", url, requestMethod, api, method));
+            this.routees.add(routee);
           }
         }
+        logger.info(String.format("routees is %s", this.routees));
       }
     } catch (Exception e) {
       logger.error(e.getLocalizedMessage());
@@ -102,7 +89,7 @@ public class GaleRouter {
     if (method != null) {
       result = true && !Modifier.isStatic(method.getModifiers());
       result = result && Modifier.isPublic(method.getModifiers());
-      result = result && method.isAnnotationPresent(RequestMapping.class);
+      result = result && method.isAnnotationPresent(GaleMapping.class);
     }
     return result;
   }

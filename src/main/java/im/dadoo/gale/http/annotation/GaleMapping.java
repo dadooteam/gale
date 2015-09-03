@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RequestMapping {
+public @interface GaleMapping {
   
   public String value();
   

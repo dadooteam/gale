@@ -5,8 +5,11 @@
  */
 package im.dadoo.gale.http.server;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
 import im.dadoo.gale.http.config.ServerConfig;
-import im.dadoo.gale.http.router.GaleRouter;
 import im.dadoo.gale.http.server.handler.GaleHttpHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -19,19 +22,20 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
- *
+ * 
  * @author codekitten
  */
+@Component
 public class GaleServerInitializer extends ChannelInitializer<SocketChannel> {
 
-  private final GaleProcessor processor;
+  @Resource
+  private GaleProcessor processor;
   
-  private final ServerConfig sc;
+  @Resource
+  private ServerConfig sc;
   
-  public GaleServerInitializer(ServerConfig sc) {
-    this.sc = sc;
-    this.processor = new GaleProcessor(new GaleRouter(sc.getPackageNames()));
-  }
+  @Resource
+  private GaleHttpHandler galeHttpHandler;
   
   @Override
   protected void initChannel(SocketChannel ch) throws Exception {
@@ -46,7 +50,8 @@ public class GaleServerInitializer extends ChannelInitializer<SocketChannel> {
     pipeline.addLast(new HttpContentCompressor());
     
     pipeline.addLast(new HttpObjectAggregator(this.sc.getSize()));
-    pipeline.addLast(new GaleHttpHandler(this.processor));
+    //pipeline.addLast(new GaleHttpHandler(this.processor));
+    pipeline.addLast(this.galeHttpHandler);
   }
   
 }

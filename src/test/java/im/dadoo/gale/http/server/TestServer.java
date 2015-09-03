@@ -5,8 +5,8 @@
  */
 package im.dadoo.gale.http.server;
 
-import com.google.common.collect.Lists;
-import im.dadoo.gale.http.config.ServerConfig;
+import im.dadoo.gale.http.GaleStarter;
+import im.dadoo.gale.http.context.TestContext;
 import io.netty.util.ResourceLeakDetector;
 
 /**
@@ -17,11 +17,6 @@ public class TestServer {
   
   public static void main(String[] args) {
     ResourceLeakDetector.getLevel();
-    ServerConfig sc = new ServerConfig();
-    sc.setPort(8080);
-    sc.setSize(Integer.MAX_VALUE);
-    sc.setPackageNames(Lists.newArrayList("im.dadoo.gale.http.controller"));
-    GaleServer server = new GaleServer(sc);
-    server.start();
+    GaleStarter.startup(TestContext.class);
   }
 }

@@ -10,19 +10,22 @@ import im.dadoo.gale.http.router.GaleRouter;
 import im.dadoo.gale.http.router.Routee;
 import java.lang.reflect.Method;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Component;
+
 /**
- *
+ * 根据request中的请求url，路由到相应的处理方法中
  * @author codekitten
  */
+@Component
 public class GaleProcessor {
   
-  private final GaleRouter router;
-  
-  public GaleProcessor(GaleRouter router) {
-    this.router = router;
-  }
+  @Resource
+  private GaleRouter router;
   
   /**
+   * 处理request，返回处理后的字符串结果
    * 
    * @param galeRequest
    * @return Return null if the request does not match any routee.
@@ -33,7 +36,7 @@ public class GaleProcessor {
     if (galeRequest != null) {
       Routee routee = this.router.getRoutee(galeRequest);
       if (routee != null) {
-        Object object = routee.getObject();
+        Object object = routee.getApi();
         Method callback = routee.getCallback();
         result = (String)callback.invoke(object, galeRequest);
       }

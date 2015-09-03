@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.annotation;
 
 import java.lang.annotation.Documented;
@@ -11,13 +6,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.stereotype.Component;
+
 /**
+ * 定义api类，被本注解修饰的类中的，被GaleMapping修饰的方法，可以响应http实践
  * 
  * @author codekitten
+ * @see GaleMapping
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Controller {
+@Component
+public @interface GaleApi {
 
+  /** bean名称 */
+  String value() default "";
+  
 }
