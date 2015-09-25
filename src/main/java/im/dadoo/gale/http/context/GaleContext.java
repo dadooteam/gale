@@ -1,7 +1,6 @@
 package im.dadoo.gale.http.context;
 
-import javax.annotation.Resource;
-
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ComponentScan("im.dadoo.gale")
 public class GaleContext {
 
-  @Resource
+  @Bean
   public ObjectMapper mapper() {
     return new ObjectMapper();
   }
