@@ -14,6 +14,8 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * 根据request中的请求url，路由到相应的处理方法中
  * @author codekitten
@@ -23,6 +25,9 @@ public class GaleProcessor {
   
   @Resource
   private GaleRouter router;
+  
+  @Resource
+  private ObjectMapper mapper;
   
   /**
    * 处理request，返回处理后的字符串结果
@@ -38,7 +43,7 @@ public class GaleProcessor {
       if (routee != null) {
         Object object = routee.getApi();
         Method callback = routee.getCallback();
-        result = (String)callback.invoke(object, galeRequest);
+        result = this.mapper.writeValueAsString(callback.invoke(object, galeRequest));
       }
     }
     return result;
