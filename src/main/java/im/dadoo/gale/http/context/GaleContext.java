@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class GaleContext {
 
   @Resource
-  private ObjectMapper mapper() {
+  public ObjectMapper mapper() {
     return new ObjectMapper();
   }
 }
