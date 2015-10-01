@@ -14,7 +14,7 @@ import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.stream.ChunkedWriteHandler;
+//import io.netty.handler.stream.ChunkedWriteHandler;
 
 /**
  * 
@@ -39,11 +39,11 @@ public class GaleServerInitializer extends ChannelInitializer<SocketChannel> {
     //inbound handler
     pipeline.addLast(new HttpRequestDecoder());
     pipeline.addLast(new HttpContentDecompressor());
-    
+
     //outbound handler
     pipeline.addLast(new HttpResponseEncoder());
     pipeline.addLast(new HttpContentCompressor());
-    pipeline.addLast(new ChunkedWriteHandler());
+    //pipeline.addLast(new ChunkedWriteHandler());
     
     pipeline.addLast(new HttpObjectAggregator(this.sc.getSize()));
     pipeline.addLast(this.galeHttpHandler);

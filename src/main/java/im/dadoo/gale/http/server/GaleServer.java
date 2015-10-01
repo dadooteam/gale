@@ -9,8 +9,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,10 +40,11 @@ public class GaleServer {
     try {
       
       ServerBootstrap b = new ServerBootstrap();
-      b.group(workerGroup, bossGroup);
-      b.option(ChannelOption.SO_BACKLOG, 1024).childOption(ChannelOption.SO_KEEPALIVE, true);
-      b.channel(NioServerSocketChannel.class);
-      b.handler(new LoggingHandler(LogLevel.DEBUG)).childHandler(this.galeServerInitializer);
+      b.option(ChannelOption.SO_BACKLOG, 1024);
+      b.option(ChannelOption.SO_KEEPALIVE, true);
+      b.option(ChannelOption.SO_REUSEADDR, true);
+      b.group(workerGroup, bossGroup).channel(NioServerSocketChannel.class).childHandler(this.galeServerInitializer);
+      
       Channel ch = b.bind(this.config.getPort()).sync().channel();
       logger.info(String.format("server is running on port %d", this.config.getPort()));
       ch.closeFuture().sync();
