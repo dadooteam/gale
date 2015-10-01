@@ -44,7 +44,7 @@ public class GalePattern {
   public Map<String, String> matcher(String uri) {
     Map<String, String> result = null;
     Matcher matcher = this.pattern.matcher(uri);
-    if (matcher.find()) {
+    if (matcher.matches()) {
       result = new HashMap<>();
       int i = 0;
       for (String key : this.keys) {

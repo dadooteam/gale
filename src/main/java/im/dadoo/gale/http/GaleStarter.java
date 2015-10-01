@@ -1,9 +1,9 @@
 package im.dadoo.gale.http;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Map;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.util.Assert;
+
 import im.dadoo.gale.http.annotation.GaleApi;
 import im.dadoo.gale.http.config.ServerConfig;
 import im.dadoo.gale.http.context.GaleContext;
@@ -25,7 +25,7 @@ public final class GaleStarter {
     router.init(beanMap.values());
     //启动server
     ServerConfig config = context.getBean(ServerConfig.class);
-    checkNotNull(config);
+    Assert.notNull(config);
     GaleServer server = context.getBean(GaleServer.class);
     server.start(config);
     context.close();

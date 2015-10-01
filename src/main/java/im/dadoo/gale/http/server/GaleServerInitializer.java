@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.server;
 
 import javax.annotation.Resource;
@@ -24,6 +19,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 /**
  * 
  * @author codekitten
+ * @since 0.1
  */
 @Component
 public class GaleServerInitializer extends ChannelInitializer<SocketChannel> {
@@ -46,12 +42,12 @@ public class GaleServerInitializer extends ChannelInitializer<SocketChannel> {
     
     //outbound handler
     pipeline.addLast(new HttpResponseEncoder());
-    pipeline.addLast(new ChunkedWriteHandler());
     pipeline.addLast(new HttpContentCompressor());
+    pipeline.addLast(new ChunkedWriteHandler());
     
     pipeline.addLast(new HttpObjectAggregator(this.sc.getSize()));
-    //pipeline.addLast(new GaleHttpHandler(this.processor));
     pipeline.addLast(this.galeHttpHandler);
+    
   }
   
 }

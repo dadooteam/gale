@@ -1,21 +1,20 @@
 package im.dadoo.gale.http.router;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import com.google.common.collect.Lists;
 import im.dadoo.gale.http.annotation.GaleMapping;
 import im.dadoo.gale.http.request.GaleRequest;
-import im.dadoo.gale.http.request.RequestMethod;
 import im.dadoo.gale.http.uri.GalePattern;
+import io.netty.handler.codec.http.HttpMethod;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 /**
  * 路由器，将url模板和对应的处理方法映射起来
@@ -25,52 +24,51 @@ import org.springframework.stereotype.Component;
 @Component
 public class GaleRouter {
   
-  private static final Logger logger = LoggerFactory.getLogger(GaleRouter.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GaleRouter.class);
   
-  private static final Logger elogger = LoggerFactory.getLogger(Exception.class);
+  private static final Logger ELOGGER = LoggerFactory.getLogger(Exception.class);
   
   private Set<Routee> routees;
   
   public void init(Collection<Object> apis) {
     this.routees = new HashSet<>();
     try {
-      checkNotNull(apis);
+      Assert.notNull(apis);
       
       for (Object api : apis) {
-        Method[] methods = api.getClass().getMethods();
-        for (Method method : methods) {
-          if (checkMethod(method)) {
-            GaleMapping mapping = method.getAnnotation(GaleMapping.class);
+        Method[] callbacks = api.getClass().getMethods();
+        for (Method callback : callbacks) {
+          if (checkMethod(callback)) {
+            GaleMapping mapping = callback.getAnnotation(GaleMapping.class);
             String url = mapping.value();
-            RequestMethod requestMethod = mapping.method();
-            Routee routee = Routee.of(url, requestMethod, api, method);
-            checkNotNull(routee, String.format("Routee is null.url{%s},requestMethod{%s},api{%s},method{%s}", url, requestMethod, api, method));
+            String methodName = mapping.method();
+            Routee routee = Routee.of(url, HttpMethod.valueOf(methodName), api, callback);
+            Assert.notNull(routee, String.format("Routee is null.url{%s},httpMethod{%s},api{%s},callback{%s}", url, methodName, api, callback));
             this.routees.add(routee);
+            LOGGER.info(String.format("url{%s},method{%s} bind to callback{%s}", url, methodName, callback.toGenericString()));
           }
         }
-        logger.info(String.format("routees is %s", this.routees));
       }
     } catch (Exception e) {
-      logger.error(e.getLocalizedMessage());
-      elogger.error("HttpRouter Construct Failed", e);
+      LOGGER.error(e.getLocalizedMessage());
+      ELOGGER.error(this.getClass().getName(), e);
     }
   }
   
   /**
    * get the matchable routee from the routee set by url and requestMethod
-   * @param galeRequest
+   * @param request
    * @return 
    */
-  public Routee getRoutee(GaleRequest galeRequest) {
+  public Routee getRoutee(GaleRequest request) {
     Routee result = null;
     for (Routee routee : routees) {
       GalePattern galePattern = routee.getPattern();
       
-      Map<String, String> params = galePattern.matcher(galeRequest.getPath());
-      if (params != null && routee.getMethod().equals(galeRequest.getMethod())) {
+      Map<String, String> params = galePattern.matcher(request.getPath());
+      if (params != null && routee.getMethod().equals(request.getMethod())) {
         for (String key : params.keySet()) {
-          List<String> value = Lists.newArrayList(params.get(key));
-          galeRequest.getParameters().put(key, value);
+          request.getParameters().add(key, params.get(key));
         }
         result = routee;
         break;
@@ -81,15 +79,15 @@ public class GaleRouter {
   
   /**
    * check whether the method is adaptable to route 
-   * @param method
+   * @param callback
    * @return 
    */
-  private boolean checkMethod(Method method) {
+  private boolean checkMethod(Method callback) {
     boolean result = false;
-    if (method != null) {
-      result = true && !Modifier.isStatic(method.getModifiers());
-      result = result && Modifier.isPublic(method.getModifiers());
-      result = result && method.isAnnotationPresent(GaleMapping.class);
+    if (callback != null) {
+      result = true && !Modifier.isStatic(callback.getModifiers());
+      result = result && Modifier.isPublic(callback.getModifiers());
+      result = result && callback.isAnnotationPresent(GaleMapping.class);
     }
     return result;
   }

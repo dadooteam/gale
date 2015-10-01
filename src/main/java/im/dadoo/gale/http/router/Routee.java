@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.router;
 
-import im.dadoo.gale.http.request.RequestMethod;
 import im.dadoo.gale.http.uri.GalePattern;
+import io.netty.handler.codec.http.HttpMethod;
+
 import java.lang.reflect.Method;
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,7 +16,7 @@ public class Routee {
   private GalePattern pattern;
 
   /** 当前请求方法 */
-  private RequestMethod method;
+  private HttpMethod method;
 
   /** uri匹配后的处理对象 */
   private Object api;
@@ -28,7 +24,7 @@ public class Routee {
   /** uri匹配后的处理方法 */
   private Method callback;
 
-  public static Routee of(String uri, RequestMethod method, Object api, Method callback) {
+  public static Routee of(String uri, HttpMethod method, Object api, Method callback) {
     Routee result = null;
     if (StringUtils.isNotBlank(uri) && method != null && api != null && callback != null) {
       result = new Routee();
@@ -63,11 +59,11 @@ public class Routee {
     this.pattern = pattern;
   }
 
-  public RequestMethod getMethod() {
+  public HttpMethod getMethod() {
     return method;
   }
 
-  public void setMethod(RequestMethod method) {
+  public void setMethod(HttpMethod method) {
     this.method = method;
   }
 
@@ -83,7 +79,7 @@ public class Routee {
     return callback;
   }
 
-  public void setMethod(Method callback) {
+  public void setCallback(Method callback) {
     this.callback = callback;
   }
 

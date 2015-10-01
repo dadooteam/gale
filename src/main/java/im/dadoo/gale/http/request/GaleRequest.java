@@ -1,36 +1,62 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.request;
 
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * 
  * @author codekitten
+ * @since 0.4
  */
 public class GaleRequest {
   
+  private String uri;
+  
   private String path;
   
-  private RequestMethod method;
+  private HttpMethod method;
   
   private HttpVersion version;
   
   private HttpHeaders headers;
   
-  private Map<String, List<String>> parameters;
+  private MultiValueMap<String, String> parameters;
 
   public GaleRequest() {
-    this.parameters = new HashMap<>();
+    this.parameters = new LinkedMultiValueMap<>();
   }
-  
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("GaleRequest [uri=");
+    builder.append(uri);
+    builder.append(", path=");
+    builder.append(path);
+    builder.append(", method=");
+    builder.append(method);
+    builder.append(", version=");
+    builder.append(version);
+    builder.append(", headers=");
+    builder.append(headers);
+    builder.append(", parameters=");
+    builder.append(parameters);
+    builder.append("]");
+    return builder.toString();
+  }
+
+  public String getUri() {
+    return uri;
+  }
+
+  public void setUri(String uri) {
+    this.uri = uri;
+  }
+
   public String getPath() {
     return path;
   }
@@ -39,12 +65,20 @@ public class GaleRequest {
     this.path = path;
   }
 
-  public RequestMethod getMethod() {
+  public HttpMethod getMethod() {
     return method;
   }
 
-  public void setMethod(RequestMethod method) {
+  public void setMethod(HttpMethod method) {
     this.method = method;
+  }
+
+  public HttpVersion getVersion() {
+    return version;
+  }
+
+  public void setVersion(HttpVersion version) {
+    this.version = version;
   }
 
   public HttpHeaders getHeaders() {
@@ -55,20 +89,12 @@ public class GaleRequest {
     this.headers = headers;
   }
 
-  public Map<String, List<String>> getParameters() {
+  public MultiValueMap<String, String> getParameters() {
     return parameters;
   }
 
-  public void setParameters(Map<String, List<String>> parameters) {
+  public void setParameters(MultiValueMap<String, String> parameters) {
     this.parameters = parameters;
-  }
-
-  public HttpVersion getVersion() {
-    return version;
-  }
-
-  public void setVersion(HttpVersion version) {
-    this.version = version;
   }
   
 }

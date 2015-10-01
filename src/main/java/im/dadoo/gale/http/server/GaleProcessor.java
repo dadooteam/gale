@@ -1,14 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.server;
 
 import im.dadoo.gale.http.request.GaleRequest;
 import im.dadoo.gale.http.router.GaleRouter;
 import im.dadoo.gale.http.router.Routee;
 import java.lang.reflect.Method;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
@@ -29,22 +27,31 @@ public class GaleProcessor {
   @Resource
   private ObjectMapper mapper;
   
+  @Resource
+  private ExecutorService controllerPool;
+  
   /**
    * 处理request，返回处理后的字符串结果
    * 
-   * @param galeRequest
+   * @param request
    * @return Return null if the request does not match any routee.
    * @throws Exception 
    */
-  public String process(GaleRequest galeRequest) throws Exception {
+  public String process(final GaleRequest request) throws Exception {
     String result = null;
-    if (galeRequest != null) {
-      Routee routee = this.router.getRoutee(galeRequest);
-      if (routee != null) {
-        Object object = routee.getApi();
-        Method callback = routee.getCallback();
-        result = this.mapper.writeValueAsString(callback.invoke(object, galeRequest));
-      }
+    Routee routee = this.router.getRoutee(request);
+    if (routee != null) {
+      final Object object = routee.getApi();
+      final Method callback = routee.getCallback();
+//      result = mapper.writeValueAsString(callback.invoke(object, request));
+      Future<String> future = this.controllerPool.submit(new Callable<String>() {
+        @Override
+        public String call() throws Exception {
+          return mapper.writeValueAsString(callback.invoke(object, request));
+        }
+        
+      });
+      result = future.get();
     }
     return result;
   }
