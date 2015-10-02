@@ -41,18 +41,17 @@ public class GaleProcessor {
     String result = null;
     Routee routee = this.router.getRoutee(request);
     if (routee != null) {
-      final Object object = routee.getApi();
+      final Object target = routee.getApi();
       final Method callback = routee.getCallback();
-//      result = mapper.writeValueAsString(callback.invoke(object, request));
       Future<String> future = this.controllerPool.submit(new Callable<String>() {
         @Override
         public String call() throws Exception {
-          return mapper.writeValueAsString(callback.invoke(object, request));
+          return mapper.writeValueAsString(callback.invoke(target, request));
         }
-        
       });
       result = future.get();
     }
     return result;
   }
+  
 }

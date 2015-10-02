@@ -18,7 +18,7 @@ public class IndexController {
   
   @GaleMapping(value = "/book/{id}", method = "GET")
   public String index(GaleRequest request) throws Exception {
-    Thread.sleep(10);
+    Thread.sleep(100);
     return request.getParameters().toString();
   }
   

@@ -6,10 +6,14 @@ import java.util.concurrent.Executors;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
+@EnableAspectJAutoProxy
+@EnableAsync
 @ComponentScan("im.dadoo.gale")
 public class GaleContext {
 
@@ -18,9 +22,8 @@ public class GaleContext {
     return new ObjectMapper();
   }
   
-  @Bean(destroyMethod = "shutdown")
+  @Bean
   public ExecutorService controllerPool() {
-//    return Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     return Executors.newCachedThreadPool();
   }
 }
