@@ -23,9 +23,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class GaleServer {
   
-  private static final Logger logger = LoggerFactory.getLogger(GaleServer.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GaleServer.class);
   
-  private static final Logger elogger = LoggerFactory.getLogger(Exception.class);
+  private static final Logger ELOGGER = LoggerFactory.getLogger(Exception.class);
   
   @Resource
   private ServerConfig config;
@@ -35,8 +35,7 @@ public class GaleServer {
   
   public void start(ServerConfig config) {
     EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-    EventLoopGroup workerGroup = new NioEventLoopGroup();
-    
+    EventLoopGroup workerGroup = new NioEventLoopGroup(8);
     try {
       
       ServerBootstrap b = new ServerBootstrap();
@@ -46,15 +45,15 @@ public class GaleServer {
       b.group(workerGroup, bossGroup).channel(NioServerSocketChannel.class).childHandler(this.galeServerInitializer);
       
       Channel ch = b.bind(this.config.getPort()).sync().channel();
-      logger.info(String.format("server is running on port %d", this.config.getPort()));
+      LOGGER.info(String.format("server is running on port %d", this.config.getPort()));
       ch.closeFuture().sync();
     } catch (Exception e) {
-      logger.error(e.getLocalizedMessage());
-      elogger.error("GaleServer failed", e);
+      LOGGER.error(e.getLocalizedMessage());
+      ELOGGER.error("GaleServer failed", e);
     } finally {
       bossGroup.shutdownGracefully();
       workerGroup.shutdownGracefully();
-      logger.info(String.format("server is stopping", this.config.getPort()));
+      LOGGER.info(String.format("server is stopping", this.config.getPort()));
     }
   }
 }

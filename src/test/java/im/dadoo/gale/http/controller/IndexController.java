@@ -1,9 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package im.dadoo.gale.http.controller;
+
+import org.apache.commons.lang3.RandomUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import im.dadoo.gale.http.annotation.GaleApi;
 import im.dadoo.gale.http.annotation.GaleMapping;
@@ -16,9 +15,12 @@ import im.dadoo.gale.http.request.GaleRequest;
 @GaleApi
 public class IndexController {
   
+  private static final Logger LOGGER = LoggerFactory.getLogger(IndexController.class);
+  
   @GaleMapping(value = "/book/{id}", method = "GET")
   public String index(GaleRequest request) throws Exception {
-    Thread.sleep(100);
+    //LOGGER.info(request.getHeaders().toString());
+    //Thread.sleep(RandomUtils.nextInt(50, 100));
     return request.getParameters().toString();
   }
   
