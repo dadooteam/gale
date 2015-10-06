@@ -7,7 +7,7 @@ and open the template in the editor.
 
 <Configuration>
   <properties>
-    <property name="LOG_HOME">~/logs/gale</property>
+    <property name="LOG_HOME">/data0/logs/gale</property>
   </properties>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
