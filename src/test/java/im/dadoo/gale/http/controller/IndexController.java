@@ -1,6 +1,5 @@
 package im.dadoo.gale.http.controller;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -4,7 +4,8 @@ import im.dadoo.gale.http.uri.GalePattern;
 import io.netty.handler.codec.http.HttpMethod;
 
 import java.lang.reflect.Method;
-import org.apache.commons.lang3.StringUtils;
+
+import org.springframework.util.StringUtils;
 
 /**
  * 保存编译后的url匹配模式和处理方法之间的对应关系
@@ -26,7 +27,7 @@ public class Routee {
 
   public static Routee of(String uri, HttpMethod method, Object api, Method callback) {
     Routee result = null;
-    if (StringUtils.isNotBlank(uri) && method != null && api != null && callback != null) {
+    if (StringUtils.hasText(uri) && method != null && api != null && callback != null) {
       result = new Routee();
       result.pattern = GalePattern.compile(uri);
       result.method = method;
