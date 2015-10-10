@@ -1,4 +1,4 @@
-package im.dadoo.gale.http.aspect;
+package im.dadoo.gale.http.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
