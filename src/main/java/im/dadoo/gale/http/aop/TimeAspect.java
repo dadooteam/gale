@@ -5,13 +5,11 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import im.dadoo.gale.http.request.GaleRequest;
 
 @Aspect
-@Order
 @Component
 public class TimeAspect {
 
@@ -19,12 +17,12 @@ public class TimeAspect {
   
   @Around("execution(* im.dadoo.gale.http.server.GaleProcessor.process(..))")
   public Object profile(ProceedingJoinPoint pjp) throws Throwable {
+    GaleRequest request = (GaleRequest)pjp.getArgs()[0];
+    
     long t1 = System.currentTimeMillis();
     Object ret = pjp.proceed();
     long t2 = System.currentTimeMillis();
-    long delta = t2 - t1;
-    GaleRequest request = (GaleRequest)pjp.getArgs()[0];
-    LOGGER.info(String.format("uri{%s},delta{%d}ms", request.getUri(), delta));
+    LOGGER.info(String.format("uri{%s},delta{%d}ms", request.getUri(), t2 - t1));
     return ret;
   }
 }
