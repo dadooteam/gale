@@ -24,7 +24,7 @@ public class TimeAspect {
     long t2 = System.currentTimeMillis();
     long delta = t2 - t1;
     GaleRequest request = (GaleRequest)pjp.getArgs()[0];
-    LOGGER.info(String.format("uri{%s},delta{%s}ms", request.getUri(), delta));
+    LOGGER.info(String.format("{\"uri\":\"%s\",\"delta\":\"%d\"}", request.getUri(), delta));
     return ret;
   }
 }
