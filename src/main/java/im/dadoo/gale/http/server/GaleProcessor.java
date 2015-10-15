@@ -4,10 +4,6 @@ import im.dadoo.gale.http.request.GaleRequest;
 import im.dadoo.gale.http.router.GaleRouter;
 import im.dadoo.gale.http.router.Routee;
 import java.lang.reflect.Method;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 
@@ -27,11 +23,8 @@ public class GaleProcessor {
   
   private ObjectMapper mapper;
   
-  private ExecutorService pool;
-  
   public GaleProcessor() {
     this.mapper = new ObjectMapper();
-    this.pool = Executors.newCachedThreadPool();
   }
   /**
    * 处理request，返回处理后的字符串结果
@@ -46,13 +39,7 @@ public class GaleProcessor {
     if (routee != null) {
       final Object target = routee.getApi();
       final Method callback = routee.getCallback();
-      Future<String> future = this.pool.submit(new Callable<String>() {
-        @Override
-        public String call() throws Exception {
-          return mapper.writeValueAsString(callback.invoke(target, request));
-        }
-      });
-      result = future.get();
+      result = mapper.writeValueAsString(callback.invoke(target, request));
     }
     return result;
   }
