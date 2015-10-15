@@ -11,7 +11,7 @@ and open the template in the editor.
   </properties>
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{ISO8601} [%t] %-5level %c{1.} - %msg%n"/>
+      <PatternLayout pattern="%d{ISO8601} [%X{RequestUri}] [%t] %-5level %c{1.} - %msg%n"/>
     </Console>
     <RollingFile name="ControllerRollingFile" filename="${LOG_HOME}/controller.log" filePattern="${LOG_HOME}/$${date:yyyy/MM/dd}/controller-%d{yyyy-MM-dd-HH}.log">
       <PatternLayout pattern="%d{ISO8601} [%t] %-5level %c{1.} - %msg%n"/>
