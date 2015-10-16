@@ -33,15 +33,14 @@ public class GaleProcessor {
    * @return Return null if the request does not match any routee.
    * @throws Exception 
    */
-  public String process(final GaleRequest request) throws Exception {
+  public String process(GaleRequest request) throws Exception {
     String result = null;
     Routee routee = this.router.getRoutee(request);
     if (routee != null) {
       final Object target = routee.getApi();
       final Method callback = routee.getCallback();
-      result = mapper.writeValueAsString(callback.invoke(target, request));
+      result = this.mapper.writeValueAsString(callback.invoke(target, request));
     }
     return result;
   }
-  
 }

@@ -19,7 +19,7 @@ public final class GaleStarter {
     context.register(GaleContext.class);
     context.register(annotatedClasses);
     context.refresh();
-    //使用@Controller中的映射信息初始化router
+    //使用@GaleApi中的映射信息初始化router
     GaleRouter router = context.getBean(GaleRouter.class);
     Map<String, Object> beanMap = context.getBeansWithAnnotation(GaleApi.class);
     router.init(beanMap.values());
