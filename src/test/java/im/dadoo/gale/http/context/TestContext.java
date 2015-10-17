@@ -12,6 +12,8 @@ public class TestContext {
 
   @Bean
   public ServerConfig config() {
-    return new ServerConfig();
+    ServerConfig config = new ServerConfig();
+    config.setHost("127.0.0.1");
+    return config;
   }
 }

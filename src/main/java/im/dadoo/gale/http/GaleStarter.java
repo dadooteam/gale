@@ -27,7 +27,7 @@ public final class GaleStarter {
     ServerConfig config = context.getBean(ServerConfig.class);
     Assert.notNull(config);
     GaleServer server = context.getBean(GaleServer.class);
-    server.start(config);
+    server.start();
     context.close();
   }
 }

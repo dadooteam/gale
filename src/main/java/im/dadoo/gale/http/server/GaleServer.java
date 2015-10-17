@@ -33,7 +33,7 @@ public class GaleServer {
   @Resource
   private GaleServerInitializer galeServerInitializer;
   
-  public void start(ServerConfig config) {
+  public void start() {
     EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     EventLoopGroup workerGroup = new NioEventLoopGroup(8);
     try {
@@ -44,8 +44,8 @@ public class GaleServer {
       b.option(ChannelOption.SO_REUSEADDR, true);
       b.group(workerGroup, bossGroup).channel(NioServerSocketChannel.class).childHandler(this.galeServerInitializer);
       
-      Channel ch = b.bind(this.config.getPort()).sync().channel();
-      LOGGER.info(String.format("server is running on port %d", this.config.getPort()));
+      Channel ch = b.bind(this.config.getHost(), this.config.getPort()).sync().channel();
+      LOGGER.info(String.format("server is running on host %s, port %d", this.config.getHost(), this.config.getPort()));
       ch.closeFuture().sync();
     } catch (Exception e) {
       LOGGER.error(e.getLocalizedMessage());
