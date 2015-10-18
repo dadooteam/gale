@@ -7,7 +7,7 @@ import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import im.dadoo.gale.http.request.GaleRequest;
+import im.dadoo.gale.http.server.GaleRequest;
 
 @Aspect
 @Order(1)

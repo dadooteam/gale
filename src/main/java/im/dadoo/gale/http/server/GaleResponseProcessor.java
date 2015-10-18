@@ -1,47 +1,54 @@
 package im.dadoo.gale.http.server;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import im.dadoo.gale.http.request.GaleRequest;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.CharsetUtil;
 
 /**
- * build FullHttpResponse with GaleRequest and content
+ * build FullHttpResponse with FullHttpRequest and content
  * @author codekitten
  * @since 0.4
  */
 @Component
 public class GaleResponseProcessor {
 
-  public FullHttpResponse process(GaleRequest request, String content) {
-    FullHttpResponse response = new DefaultFullHttpResponse(request.getVersion(), HttpResponseStatus.OK);
-    response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
-    //keep alive
-    if (request.getHeaders().contains(HttpHeaders.Names.CONNECTION)) {
-      response.headers().set(HttpHeaders.Names.CONNECTION, request.getHeaders().get(HttpHeaders.Names.CONNECTION));
+  public GaleResponse preprocess(FullHttpRequest request) {
+    GaleResponse galeResponse = new GaleResponse();
+    galeResponse.setVersion(request.getProtocolVersion());
+    galeResponse.setStatus(HttpResponseStatus.OK);
+    galeResponse.getHeaders().put(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
+    if (request.headers().contains(HttpHeaders.Names.CONNECTION)) {
+      galeResponse.getHeaders().put(HttpHeaders.Names.CONNECTION, request.headers().get(HttpHeaders.Names.CONNECTION));
     }
-    if (StringUtils.hasText(content)) {
-      response.content().writeBytes(Unpooled.wrappedBuffer(content.getBytes(CharsetUtil.UTF_8)));
-    } else {
-      response.setStatus(HttpResponseStatus.NOT_FOUND);
-    }
-    return response;
+    return galeResponse;
   }
   
-  public FullHttpResponse processException(GaleRequest request, Exception e) {
-    FullHttpResponse response = new DefaultFullHttpResponse(request.getVersion(), HttpResponseStatus.INTERNAL_SERVER_ERROR);
-    response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json; charset=UTF-8");
-    //keep alive
-    if (request.getHeaders().contains(HttpHeaders.Names.CONNECTION)) {
-      response.headers().set(HttpHeaders.Names.CONNECTION, request.getHeaders().get(HttpHeaders.Names.CONNECTION));
+  public GaleResponse preprocessException(FullHttpRequest request, Exception e) {
+    GaleResponse galeResponse = this.preprocess(request);
+    galeResponse.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
+    galeResponse.setContent(e.getLocalizedMessage());
+    return galeResponse;
+  }
+  
+  public FullHttpResponse process(GaleResponse galeResponse) {
+    FullHttpResponse response = new DefaultFullHttpResponse(galeResponse.getVersion(), galeResponse.getStatus());
+    Map<String, String> headers = galeResponse.getHeaders();
+    for (String name : headers.keySet()) {
+      response.headers().set(name, headers.get(name));
     }
-    response.content().writeBytes(Unpooled.wrappedBuffer(e.getLocalizedMessage().getBytes(CharsetUtil.UTF_8)));
+    String content = galeResponse.getContent();
+    if (StringUtils.hasText(content)) {
+      response.content().writeBytes(Unpooled.wrappedBuffer(content.getBytes(CharsetUtil.UTF_8)));
+    }
     return response;
   }
 }

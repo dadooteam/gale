@@ -1,8 +1,8 @@
 package im.dadoo.gale.http;
 
 import java.util.Map;
+
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.util.Assert;
 
 import im.dadoo.gale.http.annotation.GaleApi;
 import im.dadoo.gale.http.config.ServerConfig;
@@ -15,7 +15,17 @@ public final class GaleStarter {
   private GaleStarter() {}
   
   public static final void startup(Class<?>... annotatedClasses) {
+    startup(null, annotatedClasses);
+  }
+  
+  public static final void startup(ServerConfig newConfig, Class<?>... annotatedClasses) {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+    if (newConfig != null) {
+      ServerConfig config = context.getBean(ServerConfig.class);
+      config.setHost(newConfig.getHost());
+      config.setPort(newConfig.getPort());
+      config.setSize(newConfig.getSize());
+    }
     context.register(GaleContext.class);
     context.register(annotatedClasses);
     context.refresh();
@@ -24,8 +34,6 @@ public final class GaleStarter {
     Map<String, Object> beanMap = context.getBeansWithAnnotation(GaleApi.class);
     router.init(beanMap.values());
     //启动server
-    ServerConfig config = context.getBean(ServerConfig.class);
-    Assert.notNull(config);
     GaleServer server = context.getBean(GaleServer.class);
     server.start();
     context.close();

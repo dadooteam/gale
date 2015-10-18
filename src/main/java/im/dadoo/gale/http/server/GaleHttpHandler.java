@@ -1,9 +1,5 @@
-package im.dadoo.gale.http.server.handler;
+package im.dadoo.gale.http.server;
 
-import im.dadoo.gale.http.request.GaleRequest;
-import im.dadoo.gale.http.server.GaleProcessor;
-import im.dadoo.gale.http.server.GaleRequestProcessor;
-import im.dadoo.gale.http.server.GaleResponseProcessor;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -41,18 +37,16 @@ public class GaleHttpHandler extends SimpleChannelInboundHandler<FullHttpRequest
   
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
-    GaleRequest galeRequest = null;
-    FullHttpResponse response = null;
+    GaleRequest galeRequest = this.galeRequestProcessor.process(request);
+    GaleResponse galeResponse = this.galeResponseProcessor.preprocess(request);
     try {
-       galeRequest = this.galeRequestProcessor.process(request);
-      //自定义处理的核心部分
-      String content = this.processor.process(galeRequest);
-      response = this.galeResponseProcessor.process(galeRequest, content);
+      this.processor.process(galeRequest, galeResponse);
     } catch (Exception e) {
       LOGGER.error(e.getLocalizedMessage());
       ELOGGER.error(this.getClass().getName(), e);
-      response = this.galeResponseProcessor.processException(galeRequest, e);
+      galeResponse = this.galeResponseProcessor.preprocessException(request, e);
     } finally {
+      FullHttpResponse response = this.galeResponseProcessor.process(galeResponse);
       if (HttpHeaders.isKeepAlive(request)) {
         ctx.writeAndFlush(response);
       } else {

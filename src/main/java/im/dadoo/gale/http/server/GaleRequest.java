@@ -1,4 +1,4 @@
-package im.dadoo.gale.http.request;
+package im.dadoo.gale.http.server;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;

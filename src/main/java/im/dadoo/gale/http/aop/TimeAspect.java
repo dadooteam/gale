@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import im.dadoo.gale.http.request.GaleRequest;
+import im.dadoo.gale.http.server.GaleRequest;
 
 @Aspect
 @Order(10)

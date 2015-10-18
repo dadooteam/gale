@@ -1,7 +1,7 @@
 package im.dadoo.gale.http.router;
 
 import im.dadoo.gale.http.annotation.GaleMapping;
-import im.dadoo.gale.http.request.GaleRequest;
+import im.dadoo.gale.http.server.GaleRequest;
 import im.dadoo.gale.http.uri.GalePattern;
 import io.netty.handler.codec.http.HttpMethod;
 
