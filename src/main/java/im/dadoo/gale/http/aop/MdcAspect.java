@@ -14,13 +14,16 @@ import im.dadoo.gale.http.server.GaleRequest;
 @Component
 public class MdcAspect {
 
+  private static final String HTTP_METHOD = "HttpMethod";
   private static final String REQUEST_URI = "RequestUri";
   
   @Around("execution(* im.dadoo.gale.http.server.GaleProcessor.process(..))")
   public Object mdc(ProceedingJoinPoint pjp) throws Throwable {
     GaleRequest request = (GaleRequest)pjp.getArgs()[0];
+    MDC.put(HTTP_METHOD, request.getMethod().name());
     MDC.put(REQUEST_URI, request.getUri());
     Object result = pjp.proceed();
+    MDC.remove(HTTP_METHOD);
     MDC.remove(REQUEST_URI);
     return result;
   }
