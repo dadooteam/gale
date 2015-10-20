@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>im.dadoo</groupId>
 	<artifactId>gale</artifactId>
-	<version>0.4</version>
+	<version>0.5</version>
 	<packaging>jar</packaging>
 	<description>The high performance RPC framework based on Netty and HTTP</description>
 	<name>gale</name>

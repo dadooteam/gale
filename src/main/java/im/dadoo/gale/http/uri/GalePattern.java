@@ -30,7 +30,7 @@ public class GalePattern {
     while(matcher.find()) {
       result.keys.add(matcher.group(1));
     }
-    String replacement = "(\\\\w+)";
+    String replacement = "([^/]+)";
     String compiledUri = matcher.replaceAll(replacement);
     result.pattern = Pattern.compile(compiledUri);
     return result;

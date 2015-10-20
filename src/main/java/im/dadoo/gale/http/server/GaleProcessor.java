@@ -2,6 +2,8 @@ package im.dadoo.gale.http.server;
 
 import im.dadoo.gale.http.router.GaleRouter;
 import im.dadoo.gale.http.router.Routee;
+import io.netty.handler.codec.http.HttpResponseStatus;
+
 import java.lang.reflect.Method;
 
 import javax.annotation.Resource;
@@ -31,6 +33,8 @@ public class GaleProcessor {
       final Object target = routee.getApi();
       final Method callback = routee.getCallback();
       callback.invoke(target, request, response);
+    } else {
+      response.setStatus(HttpResponseStatus.NOT_FOUND);
     }
   }
 }

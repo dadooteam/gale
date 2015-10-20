@@ -19,6 +19,7 @@ public class IndexController {
   
   @GaleMapping(value = "/book/{id}", method = "GET")
   public void index(GaleRequest request, GaleResponse response) throws Exception {
+    LOGGER.info(request.getParameters().toString());
     response.setContent(request.getParameters().toString());
   }
   
