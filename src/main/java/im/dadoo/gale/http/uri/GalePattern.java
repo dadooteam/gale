@@ -38,7 +38,7 @@ public class GalePattern {
   
   /**
    * 
-   * @param uri
+   * @param uri object uri
    * @return 如果匹配不成功,返回null,如果匹配成功,返回提取的参数map
    */
   public Map<String, String> matcher(String uri) {

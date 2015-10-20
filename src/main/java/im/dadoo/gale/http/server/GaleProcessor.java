@@ -23,9 +23,9 @@ public class GaleProcessor {
   /**
    * 处理request，返回处理后的字符串结果
    * 
-   * @param request
-   * @return Return null if the request does not match any routee.
-   * @throws Exception 
+   * @param request http request wrapper
+   * @param response http response wrapper
+   * @throws invoke error 
    */
   public void process(GaleRequest request, GaleResponse response) throws Exception {
     Routee routee = this.router.getRoutee(request);

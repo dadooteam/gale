@@ -20,7 +20,10 @@ import org.springframework.stereotype.Component;
 @Component
 public @interface GaleApi {
 
-  /** bean名称 */
+  /**
+   * bean name
+   * @return bean name
+   */
   String value() default "";
   
 }
