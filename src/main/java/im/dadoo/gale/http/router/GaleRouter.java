@@ -57,8 +57,8 @@ public class GaleRouter {
   
   /**
    * get the matchable routee from the routee set by url and requestMethod
-   * @param request
-   * @return 
+   * @param request http request wrapper
+   * @return url object
    */
   public Routee getRoutee(GaleRequest request) {
     Routee result = null;
