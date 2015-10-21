@@ -20,15 +20,15 @@ public final class GaleStarter {
   
   public static final void startup(ServerConfig newConfig, Class<?>... annotatedClasses) {
     AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+    context.register(GaleContext.class);
+    context.register(annotatedClasses);
+    context.refresh();
     if (newConfig != null) {
       ServerConfig config = context.getBean(ServerConfig.class);
       config.setHost(newConfig.getHost());
       config.setPort(newConfig.getPort());
       config.setSize(newConfig.getSize());
     }
-    context.register(GaleContext.class);
-    context.register(annotatedClasses);
-    context.refresh();
     //使用@GaleApi中的映射信息初始化router
     GaleRouter router = context.getBean(GaleRouter.class);
     Map<String, Object> beanMap = context.getBeansWithAnnotation(GaleApi.class);
